@@ -1,0 +1,17 @@
+1.locate 和 定时任务 mlocate.cron
+  locate 查找文件，通过对 mlocate.db 进行索引查询
+  mlocate.cron 定时更新数据库，获取文件系统的文件名
+  
+ 2.使用 iotop，可以查看系统 IO 访问情况
+ 
+ 参考文章:http://ju.outofmemory.cn/entry/339013
+ 
+ 3.熟悉python升级流程
+   tar zxf python.3.X -C /path
+   cd /path/python.3.X
+   mkdir /usr/local/python3.x
+   ./configurs --prefix=/usr/local/python3.x
+   make && make install
+   使用 test.py 时，头部加入 /usr/local/python3.x/bin/python3
+   运行 /usr/local/python3.x/bin/python3 test.py
+  
