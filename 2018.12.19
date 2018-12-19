@@ -46,4 +46,10 @@ wait
 目前获取到数据后，如何处理和推送成功与否至elastic
 
 关键问题：如何应对 -f
+已和于哥反馈，表示-f无法退出，还是有问题的。
 
+
+2.cmd代码阅读
+  c 语言，ASCII https://blog.csdn.net/qq_29350001/article/details/53320881，在 handle_control() 
+  
+  对面向过程，感觉有种似懂非懂的感觉
