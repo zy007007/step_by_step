@@ -1,2 +1,49 @@
 1.获取日志数据进行中
+  使用了 inotify 进行日志的监控，对于单台日志的动态实时获取，已经基本完成。
+  #!/bin/bash
+
+Path=/home/hdd2/syslog
+
+/usr/bin/inotifywait -mrq --format '%w%f' -e create,modify $Path | while read line
+do
+
+    if [ -f $line ];then
+        if [[ $line =~ 'heimdallrd' ]];then
+            tail -1f $line
+        fi
+    fi
+done
+
+用 -1f ,可以做到每条日志试试监测，但是只能监测一台
+因为hd日志，一次登录，每秒产生好几条，导致 -n1 获取的数据速度，和监控实时变化的速度不相匹配。
+
+通过shell并发，可以实现多台的实时监控
+Path=/home/hdd2/syslog
+
+arr=`ls -l $Path | grep -v total | awk '{print $NF}'`
+for a in $arr
+do
+    {
+        /usr/bin/inotifywait -mrq --format '%w%f' -e create,modify $Path/$a/heimdallrd.log | while read line
+        do
+            if [ -f $line ];then
+                if [[ $line =~ 'heimdallrd' ]];then
+                    tail -1f $line
+                #hostname=`tail -1f $line | awk '{print $4}'`
+                #log=`tail -1f $line | awk -F 'heimdallrd' '{print $NF}'`
+                #times=`date +%Y-%m-%d" "%T`
+                #echo $hostname $log $times
+                #curl -X POST 'els_url:9200/heimdallrd/_doc' -d {time:$times, hostname:$hostname, log:$log}
+                fi
+            fi
+            continue
+        done
+        echo $line
+    }&
+done
+wait
+中间注释的问题，即为
+目前获取到数据后，如何处理和推送成功与否至elastic
+
+关键问题：如何应对 -f
 
