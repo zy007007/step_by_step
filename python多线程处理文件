@@ -1,0 +1,82 @@
+具体实例：（以下代码大部分来自师哥FWH）
+
+文件大小 4.2G 行数 26957026
+内容格式为5月1日至6月1日，精确到秒后三位数值
+2019-05-01 00:00:00.330 INVALID  Ignore 17        ip1 ->       ip2           0.0.0.0:0     ->          0.0.0.0:0       264000        0
+
+需要求这一个月每分钟的倒数第二列值的和，max top 10
+
+一开始使用了awk处理：
+for m in `seq -w 01 31`
+do
+  for i in `seq -w 00 23`
+  do
+    for j in `seq -w 00 59`
+    do
+      b="2019-05"-${m}
+      a=${i}":"${j}":"
+      echo ${b} ${a}" 10.75.8.72 "`awk -v DATE="${b}" -v VAR="${a}" '{if($1 ~ DATE && $2 ~ VAR && $7 ~ /ip1/) print $0}' filename | awk '{sum += $(NF-1)} END {print sum}'` >> src_resulttest
+    done 
+  done
+done
+1、匹配每行的日期，时:分:，ip1
+2、对符合条件的行求倒数第二列的sum
+3、结果格式写入
+4、最后再 sort 排序即可
+
+以上代码可以实现需求，但是速度慢，决定采用python完成。
+# - * - coding:utf-8 - * -
+# !/usr/bin/env python
+# By Gemini@2019
+
+import re
+import os
+import multiprocessing
+
+
+def resolv_line(buffer_list):
+    tmp_json = {}
+    for i in buffer_list:
+        key = i.split()[0] + i.split()[1][0:5]
+        if key in tmp_json.keys():
+            tmp_json[key] += int(i.split()[15])
+        else:
+            tmp_json[key] = int(i.split()[15])
+    with open(file_save, 'a+') as f:
+        f.writelines(str(tmp_json) + '\n')
+        f.flush()
+
+
+def openfile(file_cont):
+    p = multiprocessing.Pool(processes=10)
+    buffer_list = []
+    for i in file_cont:
+        if compile_ip == (i.split()[9]).split(":")[0]:
+        # if compile_ip == (i.split()[6]).split(":")[0]:
+            buffer_list.append(i)
+
+        if len(buffer_list) > buffer_len:
+            p.apply_async(resolv_line, (buffer_list,))
+            buffer_list = []
+    p.apply_async(resolv_line, (buffer_list,))
+    p.close()
+    p.join()
+
+
+def main():
+    with open(file_path, 'r') as f:
+        openfile(f.readlines())
+
+
+if __name__ == '__main__':
+    file_name = "filename"
+    file_path = "/home/work/cost/filename/" + file_name
+    file_save = "/home/work/cost/dst_" + file_name
+    compile_ip = "ip1"
+    buffer_len = 75000
+    # cpu_use = multiprocessing.cpu_count() - 1
+    main()
+
+以上代码运行较快，得出的结果是期望，只是格式为字典，需要自己后期再处理即可。
+
+一次工作任务，学习两种处理方式，值得记录。
