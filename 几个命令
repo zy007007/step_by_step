@@ -1,0 +1,32 @@
+两个文件中的行：
+  grep -Ff file1 file2
+  file1 中有，file2 中有
+  
+  grep -vFf file1 file2 
+  file 中没有，file2 中有的
+  
+grep前后行
+  grep -C 5 'parttern' inputfile //打印匹配行的前后5行
+  grep -A 5 'parttern' inputfile //打印匹配行的后5行 
+  grep -B 5 'parttern' inputfile //打印匹配行的前5行
+  
+查看目录下包含行
+  grep -R word .
+  
+创建1G的文件
+  dd if=/dev/zero of=/tem/test bs=1M count=1024
+
+远程登录数据库
+  mysql -u databasename -h remote_ip -P port -pPASSWD
+  
+模糊查询
+  select * from command where time like '2019-01-18%' order by time DESC limit 1;
+  
+导出数据
+  mysqldump -h127.0.0.1 -p --lock-tables=false --no-create-info cmdrecord threats_audit_rules > cmdrecord_threats.sql
+  mysqldump -h127.0.0.1 -p --lock-tables=false --no-create-info cmdrecord session --where="session_id > 298708" > cmdrecord_new_session.sql
+  
+另辟空间
+  screen -R yishen
+  screen -r yishen
+  ctrl+a+d 返回主页
