@@ -1,0 +1,28 @@
+把几台服务器的流量镜像到一个服务器后，需要进行抓包获取所需数据，使用iptables筛选，利用rsyslog保存。
+
+1.网卡设置为混杂模式：ifconfig ethx promisc
+2.下载安装https://github.com/aabc/ipt-netflow
+yum install -y iptables-devel dkms
+unzip ipt-netflow-master.zip
+cd ipt-netflow-master
+./configure --enable-promisc
+make all install
+iptables -A PREROUTING -t raw -i ethx -j NETFLOW
+sysctl net.netflow.promisc=1
+grep Promisc /proc/net/stat/ipt_netflow
+3.iptables规则，es：
+iptables -t raw -A PREROUTING -j NETFLOW
+iptables -t raw -A PREROUTING -d ip -j LOG --log-level 5 --log-prefix "C3TOC4BGP"     //需求
+iptables -t raw -A PREROUTING -i eth0 -j DROP
+4.设置rsyslog，抓包数据存放地址
+*.info;kern.!notice;mail.none;authpriv.none;cron.none                /var/log/messages
+kern.=notice       /yourpath/datas
+5.设置logrotate切割日志
+vim /etc/logrotate.d/iptables
+/home/yourpath/iptables.log{
+size 10M
+create 0664 root root
+rotate 10000
+}
+
+对于数据后续的处理，随机应变
