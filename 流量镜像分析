@@ -1,4 +1,5 @@
 把几台服务器的流量镜像到一个服务器后，需要进行抓包获取所需数据，使用iptables筛选，利用rsyslog保存。
+ethx为流量入网卡。
 
 1.网卡设置为混杂模式：ifconfig ethx promisc
 2.下载安装https://github.com/aabc/ipt-netflow
