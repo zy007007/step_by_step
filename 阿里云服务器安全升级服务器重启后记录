@@ -1,0 +1,14 @@
+1.早前记得安全组开放端口后就可以直接访问对应的端口，这次需要手动新增iptables，后续注意
+iptables -I INPUT -p tcp --dport  80 -j ACCEPT
+
+2.启动进程管理
+supervisord -c supervisord.conf
+进入终端
+supervisorctl -c supervisord.conf
+
+3.启动postgresql
+systemctl start postgresql
+
+4.cd /home/zhaoyi/adminMongo/ 启动mongo web
+nohup npm start &
+
