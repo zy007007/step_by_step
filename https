@@ -1,0 +1,12 @@
+网站的域名已经可以正常访问了
+但是微信小程序的请求是需要https的，因此折腾了一阵，终于也支持https访问了
+
+1.在域名管理中申请和下载证书
+
+2.配置nginx
+https://www.cnblogs.com/chen-msg/p/8583648.html
+
+3.重启发现问题，未识别ssl，需重新编译
+https://blog.seosiwei.com/detail/28
+
+幸好安装nginx的包找到了，不然又是一阵折腾
