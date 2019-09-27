@@ -1,0 +1,22 @@
+python es:
+def myCommand(cmd):
+    import platform
+    import subprocess
+    is_linux = platform.system() == 'Linux'
+    if is_linux:
+        p = subprocess.Popen(cmd, stderr=subprocess.STDOUT, stdout=subprocess.PIPE, shell=True, preexec_fn=os.setsid)
+    else:
+        p = None
+    return p.stdout.read()
+
+
+def dig_ip(ip):
+    result = myCommand("dig +short -x " + ip)
+    if result == '':
+        return ip
+    else:
+        return result.splitlines()[0].strip('.')
+
+go es:
+import "github.com/codeskyblue/go-sh" 见这个库说明即可 https://github.com/codeskyblue/go-sh，还不错
+具体使用在 sh.Command("echo", body).Command("mail", "-s", "敏感命令第2类警告", "xxx@xxx.com").Run()
