@@ -14,7 +14,7 @@ grep Promisc /proc/net/stat/ipt_netflow
 3.iptables规则，es：
 iptables -t raw -A PREROUTING -j NETFLOW
 iptables -t raw -A PREROUTING -d ip -j LOG --log-level 5 --log-prefix "C3TOC4BGP"     //需求
-iptables -t raw -A PREROUTING -i eth0 -j DROP
+iptables -t raw -A PREROUTING -i ethx -j DROP    // 非必需
 4.设置rsyslog，抓包数据存放地址
 *.info;kern.!notice;mail.none;authpriv.none;cron.none                /var/log/messages
 kern.=notice       /yourpath/datas
